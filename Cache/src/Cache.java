@@ -51,6 +51,7 @@ public class Cache {
             return temp;
         }
         if (Cache1.contains(key) && Cache2.contains(key)) {
+            r2++;
             ListIterator<Object> M = Cache1.listIterator(0);
             ListIterator<?> N = Cache2.listIterator(0);
             while (M.hasNext()) {
@@ -135,9 +136,9 @@ public class Cache {
     @Override
     public String toString(){
         double HC = HC1 + HC2;
-        double HR1 = (HC1 / r1) * 100;
-        double HR2 = (HC2 / r2) * 100;
-        double HR = (HC / r1) * 100;
+        double HR1 = (HC1 / r1);
+        double HR2 = (HC2 / r2);
+        double HR = (HC / r1);
         return("First level cache with " + cache1_size + " entries has been created\nSecond level cache with " + cache2_size +" entries has been created\n..............................\nThe number of global references:\t" + r1 + "\nThe number of glabal cache hits:\t" + HC +"\nThe global hit ratio\t\t\t:\t" + HR + "\n\nThe number of 1st-level references:\t" + r1 + "\nThe number of 1st-level cache hits:\t" + HC1 + "\nThe 1st-level cache hit ratio\t\t\t:\t" + HR1 + "\n\nThe number of 2nd-level references:\t" + r2 + "\nThe number of 2nd-level cache hits:\t" + HC2 + "\nThe 2nd-level cache hit ratio\t\t\t:\t" + HR2);
     }
 }

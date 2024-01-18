@@ -63,7 +63,6 @@ public class Cache {
                     HC2++;
                     temp = Cache2.get(N.previousIndex());
                     N.remove();
-                    Cache2.addFirst(temp);
                 }
             }
             Cache1.addFirst(temp);

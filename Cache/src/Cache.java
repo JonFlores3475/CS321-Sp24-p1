@@ -33,7 +33,7 @@ public class Cache {
                     I.remove();
                     Cache1.addFirst(temp);
                     Cache2.addFirst(temp);
-                    return HC2;
+                    return temp;
                 }
             }
         }
@@ -46,9 +46,28 @@ public class Cache {
                     temp = Cache1.get(J.previousIndex());
                     J.remove();
                     Cache1.addFirst(temp);
-                    return HC1;
+                    return temp;
                 }
             }
+        }
+        if (Cache1.contains(key) && Cache2.contains(key)) {
+            ListIterator<?> M = Cache1.listIterator(0);
+            ListIterator<?> N = Cache2.listIterator(0);
+            while (M.hasNext()) {
+                if (M.next().equals(key)) {
+                    HC1++;
+                    temp = Cache1.get(M.previousIndex());
+                    M.remove();
+                    Cache1.addFirst(temp);
+                }
+                if (N.next().equals(key)) {
+                    HC2++;
+                    temp = Cache2.get(N.previousIndex());
+                    N.remove();
+                    Cache2.addFirst(temp);
+                }
+            }
+            return temp;
         }
         return null;
     }

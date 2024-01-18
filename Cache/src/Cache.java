@@ -31,11 +31,11 @@ public class Cache {
                     HC2++;
                     temp = Cache2.get(I.previousIndex());
                     I.remove();
-                    Cache1.addFirst(temp);
-                    Cache2.addFirst(temp);
-                    return temp;
                 }
             }
+            Cache1.addFirst(temp);
+            Cache2.addFirst(temp);
+            return temp;
         }
         if (Cache1.contains(key) && !Cache2.contains(key)) {
             Cache2.addFirst(key);
@@ -45,20 +45,19 @@ public class Cache {
                     HC1++;
                     temp = Cache1.get(J.previousIndex());
                     J.remove();
-                    Cache1.addFirst(temp);
-                    return temp;
                 }
             }
+            Cache1.addFirst(temp);
+            return temp;
         }
         if (Cache1.contains(key) && Cache2.contains(key)) {
-            ListIterator<?> M = Cache1.listIterator(0);
+            ListIterator<Object> M = Cache1.listIterator(0);
             ListIterator<?> N = Cache2.listIterator(0);
             while (M.hasNext()) {
                 if (M.next().equals(key)) {
                     HC1++;
                     temp = Cache1.get(M.previousIndex());
                     M.remove();
-                    Cache1.addFirst(temp);
                 }
                 if (N.next().equals(key)) {
                     HC2++;
@@ -67,6 +66,8 @@ public class Cache {
                     Cache2.addFirst(temp);
                 }
             }
+            Cache1.addFirst(temp);
+            Cache2.addFirst(temp);
             return temp;
         }
         return null;

@@ -20,58 +20,37 @@ public class Cache {
 
     public static Object get(Object key) {
         r1++;
-        if (Cache1.isEmpty() && Cache2.isEmpty() || !Cache1.contains(key) && !Cache2.contains(key)) {
-            return null;
-        }
-        if (!Cache1.contains(key) && Cache2.contains(key)) {
-            HC2++;
+        if (Cache1.isEmpty() && Cache2.isEmpty()) {
+            r1++;
             r2++;
-            ListIterator<?> I = Cache2.listIterator(0);
-            while (I.hasNext()) {
-                if (I.next().equals(key)) {
-                    HC2++;
-                    temp = Cache2.get(I.previousIndex());
-                    I.remove();
-                }
-            }
-            Cache1.addFirst(temp);
-            Cache2.addFirst(temp);
-            return temp;
+            add(key);
+            return key;
         }
-        if (Cache1.contains(key) && !Cache2.contains(key)) {
-            HC1++;
-            Cache2.addFirst(key);
-            ListIterator<?> J = Cache1.listIterator(0);
-            while (J.hasNext()) {
-                if (J.next().equals(key)) {
-                    temp = Cache1.get(J.previousIndex());
-                    J.remove();
-                }
+        ListIterator<?> I = Cache1.listIterator(0);
+        ListIterator<?> J = Cache2.listIterator(0);
+        while(I.hasNext()){
+            if(I.next().equals(key)){
+                HC1++;
+                temp = Cache1.get(I.nextIndex());
+                I.remove();
+                add(key);
+                return temp;
             }
-            Cache1.addFirst(temp);
-            return temp;
-        }
-        if (Cache1.contains(key) && Cache2.contains(key)) {
-            HC1++;
-            HC2++;
             r2++;
-            ListIterator<Object> M = Cache1.listIterator(0);
-            ListIterator<?> N = Cache2.listIterator(0);
-            while (M.hasNext()) {
-                if (M.next().equals(key)) {
-                    temp = Cache1.get(M.previousIndex());
-                    M.remove();
-                }
-                if (N.next().equals(key)) {
-                    temp = Cache2.get(N.previousIndex());
-                    N.remove();
-                }
-            }
-            Cache1.addFirst(temp);
-            Cache2.addFirst(temp);
-            return temp;
+            break;
         }
-        return null;
+        while(J.hasNext()){
+            if(J.next().equals(key)){
+                HC2++;
+                temp = Cache2.get(J.nextIndex());
+                J.remove();
+                add(key);
+                return temp;
+            }
+            break;
+        }
+        add(key);
+        return key;
     }
 
     public static Object add(Object value) {

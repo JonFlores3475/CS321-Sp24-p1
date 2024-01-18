@@ -25,9 +25,7 @@ public class Test extends Cache {
         Scanner scan = new Scanner(file);
         while (scan.hasNext()) {
             String key = scan.next();
-            if (get(key) == null) {
-                add(key);
-            }
+            get(key);
         }
         long elapsed = System.currentTimeMillis() - start;
         System.out.println(T.Cache.toString());

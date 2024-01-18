@@ -6,21 +6,21 @@ import java.io.IOException;
 import java.io.FileWriter;
 
 
-public class CacheTest extends Cache {
+public class Test extends Cache {
     private static final long start = System.currentTimeMillis();
     private final Cache Cache;
 
-    public CacheTest(int args1, int args2, String args3) {
+    public Test(int args1, int args2, String args3) {
         super(args1, args2, args3);
         Cache = new Cache(args1, args2, args3);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
         if (!(args.length == 3)) {
-            System.out.println("\nUsage: java CacheTest <cache1-size> <cache2-size> <input file name>");
+            System.out.println("\nUsage: java Test <cache1-size> <cache2-size> <input file name>");
             System.exit(1);
         }
-        CacheTest T = new CacheTest(parseInt(args[0]), parseInt(args[1]), args[2]);
+        Test T = new Test(parseInt(args[0]), parseInt(args[1]), args[2]);
         File file = new File(args[2]);
         Scanner scan = new Scanner(file);
         while (scan.hasNext()) {

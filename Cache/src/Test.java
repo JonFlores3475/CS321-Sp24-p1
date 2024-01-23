@@ -1,3 +1,8 @@
+/**
+ * Cache Class
+ * CS 321 Spring 2024
+ * @author Jon Flores
+ */
 import static java.lang.Integer.parseInt;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,17 +12,18 @@ import java.io.FileWriter;
 
 
 public class Test extends Cache {
-    private static final long start = System.currentTimeMillis();
-    private final Cache Cache;
-    private static Test T;
-    private static File file;
+    private static final long start = System.currentTimeMillis(); //start timer
+    private final Cache Cache; //create Cache
+    private static Test T; //create test
+    private static File file; //create file
 
-    public Test(int args0, int args1, int args2, String args3) {
-        super(args0, args1, args2, args3);
-        Cache = new Cache(args0, args1, args2, args3);
+    public Test(int args0, int args1, int args2, String args3) {//constructor fot the Test class
+        super(args0, args1, args2, args3);//pass arguments to Cache class
+        Cache = new Cache(args0, args1, args2, args3);//Create new cache
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException {//main method
+        //user input error handling start
         if ((args.length < 3 || args.length > 4) || (parseInt(args[0]) < 1 || parseInt(args[0]) > 2) || (args.length == 3 && parseInt(args[0]) == 2) || (args.length == 4 && parseInt(args[0]) == 1)){
             System.out.println("\nUsage: java Test <1> <cache1-size> <input file name>\nfor single cache or\n java Test <2> <cache1-size> <cache2-size> <input file name>\nfor 2Cache.");
             System.exit(1);
@@ -35,46 +41,47 @@ public class Test extends Cache {
             System.out.println("\nUsage: java Test <1> <cache1-size> <input file name>\nfor single cache or\n java Test <2> <cache1-size> <cache2-size> <input file name>\nfor 2Cache.");
             System.exit(1);
         }
-        if(args.length == 3){
+        //end of user input error handling
+        if(args.length == 3){//if single Cache
             T = new Test(parseInt(args[0]), parseInt(args[1]), 0, args[2]);
             file = new File(args[2]);
         }
-        if(args.length == 4) {
+        if(args.length == 4) {//if 2Cache
             T = new Test(parseInt(args[0]), parseInt(args[1]), parseInt(args[2]), args[3]);
             file = new File(args[3]);
         }
-        Scanner scan = new Scanner(file);
-        while (scan.hasNext()) {
-            String key = scan.next();
-            get(key);
+        Scanner scan = new Scanner(file);//create a new file scanner
+        while (scan.hasNext()) {//step through file
+            String key = scan.next();//grab strings as they appear
+            get(key);//call to Cache get method
         }
-        long elapsed = System.currentTimeMillis() - start;
-        System.out.println(T.Cache.toString());
-        try {
-            File out = new File("README.txt");
+        long elapsed = System.currentTimeMillis() - start;//calculate elapsed time
+        System.out.println(T.Cache.toString());//print out the appropriate toString
+        try {//now we try to make a README.txt file with the time printed in it
+            File out = new File("README.txt");//create new file
             if (out.createNewFile()) {
-                System.out.println("\nFile successfully created: " + out.getName());
-            } else {
-                System.out.println("\nFile already exists.");
-                out.delete();
-                System.out.println("\nFile deleted.");
-                out = new File("README.txt");
-                System.out.println("\nFile recreated.");
+                System.out.println("\nFile successfully created: " + out.getName());//if file did not previously exist, we are good
+            } else {//if file already exits
+                System.out.println("\nFile already exists.");//notify user
+                out.delete();//delete the existing file
+                System.out.println("\nFile deleted.");//notify user
+                out = new File("README.txt");//recreate file
+                System.out.println("\nFile recreated.");//notify user
             }
-        } catch (IOException e) {
-            System.out.println("\nAn error occurred.");
-            e.printStackTrace();
+        } catch (IOException e) {//if anything else happens
+            System.out.println("\nAn error occurred.");//notify user of error
+            e.printStackTrace();//print stack trace
         }
-        try{
-            FileWriter writer = new FileWriter("README.txt");
-            writer.write(elapsed+" MS");
-            writer.close();
-            System.out.println("\nSuccessfully wrote to file.");
+        try{//try to write to file
+            FileWriter writer = new FileWriter("README.txt");//create new file writer
+            writer.write(elapsed+" MS");//write time and MS
+            writer.close();//close the writer
+            System.out.println("\nSuccessfully wrote to file.");//notify user of success
         }
-        catch(IOException e){
-            System.out.println("\nAn error occurred.");
-            e.printStackTrace();
+        catch(IOException e){//if anything goes wrong
+            System.out.println("\nAn error occurred.");//notify user
+            e.printStackTrace();//print stack trace
         }
-        System.exit(0);
+        System.exit(0);//end the program safely
     }
 }

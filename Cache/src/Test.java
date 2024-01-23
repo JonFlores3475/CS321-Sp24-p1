@@ -1,5 +1,5 @@
 /**
- * Cache Class
+ * Test Class for Cache Class
  * CS 321 Spring 2024
  * @author Jon Flores
  */

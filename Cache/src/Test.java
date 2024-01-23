@@ -22,6 +22,19 @@ public class Test extends Cache {
             System.out.println("\nUsage: java Test <1> <cache1-size> <input file name>\nfor single cache or\n java Test <2> <cache1-size> <cache2-size> <input file name>\nfor 2Cache.");
             System.exit(1);
         }
+        if(args.length == 4 && parseInt(args[2]) == 0){
+            System.out.println("\nCache 2 of size 0 results in single cache.");
+        }
+        if(parseInt(args[1]) == 0){
+            System.out.println("\nCache1-size must be non-zero positive integer.");
+            System.out.println("\nUsage: java Test <1> <cache1-size> <input file name>\nfor single cache or\n java Test <2> <cache1-size> <cache2-size> <input file name>\nfor 2Cache.");
+            System.exit(1);
+        }
+        if((args.length == 3 && parseInt(args[1]) < 0) || (args.length == 4 && (parseInt(args[1]) < 0) || parseInt(args[2]) < 0)){
+            System.out.println("\nCache sizes must be positive integer values.");
+            System.out.println("\nUsage: java Test <1> <cache1-size> <input file name>\nfor single cache or\n java Test <2> <cache1-size> <cache2-size> <input file name>\nfor 2Cache.");
+            System.exit(1);
+        }
         if(args.length == 3){
             T = new Test(parseInt(args[0]), parseInt(args[1]), 0, args[2]);
             file = new File(args[2]);

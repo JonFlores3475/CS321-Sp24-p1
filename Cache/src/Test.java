@@ -18,7 +18,7 @@ public class Test extends Cache {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        if ((args.length < 3 || args.length > 4) || (parseInt(args[0]) < 1 || parseInt(args[0]) > 2)){
+        if ((args.length < 3 || args.length > 4) || (parseInt(args[0]) < 1 || parseInt(args[0]) > 2) || (args.length == 3 && parseInt(args[0]) == 2) || (args.length == 4 && parseInt(args[0]) == 1)){
             System.out.println("\nUsage: java Test <1> <cache1-size> <input file name>\nfor single cache or\n java Test <2> <cache1-size> <cache2-size> <input file name>\nfor 2Cache.");
             System.exit(1);
         }
@@ -31,25 +31,12 @@ public class Test extends Cache {
             file = new File(args[3]);
         }
         Scanner scan = new Scanner(file);
-        if(parseInt(args[0]) == 2) {
-            while (scan.hasNext()) {
-                String key = scan.next();
-                get2(key);
-            }
-        }
-        if(parseInt(args[0]) == 1){
-            while (scan.hasNext()) {
-                String key = scan.next();
-                get1(key);
-            }
+        while (scan.hasNext()) {
+            String key = scan.next();
+            get(key);
         }
         long elapsed = System.currentTimeMillis() - start;
-        if(parseInt(args[0]) == 2) {
-            System.out.println(T.Cache.toString2());
-        }
-        if(parseInt(args[0]) == 1){
-            System.out.println(T.Cache.toString1());
-        }
+        System.out.println(T.Cache.toString());
         try {
             File out = new File("README.txt");
             if (out.createNewFile()) {

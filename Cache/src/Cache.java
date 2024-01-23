@@ -21,27 +21,29 @@ public class Cache {
         }
         if(args0 == 1){
             cache1_size = args1;
+            cache2_size = 0;
             Cache1 = new LinkedList<>();
         }
     }
-    public static Object get1(Object key){
-        r1++;
-        if(Cache1.isEmpty()){
-            add1(key);
+
+    public static Object get(Object key) {
+        if (cache2_size == 0) {
+            r1++;
+            if(Cache1.isEmpty()){
+                add(key);
+                return key;
+            }
+            ListIterator<Object> I = Cache1.listIterator(0);
+            while (I.hasNext()) {
+                if (I.next().equals(key)) {
+                    HC1++;
+                    I.remove();
+                    break;
+                }
+            }
+            add(key);
             return key;
         }
-        ListIterator<Object> I = Cache1.listIterator(0);
-        while (I.hasNext()) {
-            if (I.next().equals(key)) {
-                HC1++;
-                I.remove();
-                break;
-            }
-        }
-        add1(key);
-        return key;
-    }
-    public static Object get2(Object key) {
         r1++;
         if (Cache1.isEmpty() && Cache2.isEmpty()) {
             r1++;
@@ -70,25 +72,25 @@ public class Cache {
                 }
             }
         }
-        add2(key);
+        add(key);
         detect = false;
         return key;
     }
-    public static Object add1(Object value){
-        if(Cache1.isEmpty()) {
+
+    public static Object add(Object value) {
+        if (cache2_size == 0) {
+            if(Cache1.isEmpty()) {
+                Cache1.addFirst(value);
+                return value;
+            }
+            if(Cache1.size() >= cache1_size){
+                while(Cache1.size() >= cache1_size){
+                    Cache1.removeLast();
+                }
+            }
             Cache1.addFirst(value);
             return value;
         }
-        if(Cache1.size() >= cache1_size){
-            while(Cache1.size() >= cache1_size){
-                Cache1.removeLast();
-            }
-        }
-        Cache1.addFirst(value);
-        return value;
-    }
-
-    public static Object add2(Object value) {
         if(!Cache1.isEmpty() && Cache2.isEmpty()){
             Cache2 = Cache1;
             Cache1.addFirst(value);
@@ -185,7 +187,7 @@ public class Cache {
                 Cache1.removeLast();
             }
             if(Cache2.size() >= cache2_size){
-                add2(value);
+                add(value);
             }
             Cache1.addFirst(value);
             Cache2.addFirst(value);
@@ -193,7 +195,7 @@ public class Cache {
         }
         return value;
     }
-    public Object remove1(Object key){
+    public Object remove(Object key){
         if(Cache1.contains(key)){
             ListIterator<Object> K = Cache1.listIterator(0);
             while(K.hasNext()){
@@ -204,46 +206,36 @@ public class Cache {
                 }
             }
         }
-        return null;
-    }
-    public Object remove2(Object key){
-        if(Cache1.isEmpty() && Cache2.isEmpty() || !Cache1.contains(key) && !Cache2.contains(key)){
-            return null;
-        }
-        if(Cache1.contains(key)){
-            ListIterator<Object> K = Cache1.listIterator(0);
-            while(K.hasNext()){
-                if(K.next().equals(key)){
-                    temp = Cache1.get(K.previousIndex());
-                    K.remove();
-                    return temp;
-                }
+        if(cache2_size > 0) {
+            if (Cache1.isEmpty() && Cache2.isEmpty() || !Cache1.contains(key) && !Cache2.contains(key)) {
+                return null;
             }
-        }
-        if(Cache2.contains(key)){
-            ListIterator<Object> L = Cache2.listIterator(0);
-            while(L.hasNext()){
-                if(L.next().equals(key)){
-                    temp = Cache2.get(L.previousIndex());
-                    L.remove();
-                    return temp;
+
+            if (Cache2.contains(key)) {
+                ListIterator<Object> L = Cache2.listIterator(0);
+                while (L.hasNext()) {
+                    if (L.next().equals(key)) {
+                        temp = Cache2.get(L.previousIndex());
+                        L.remove();
+                        return temp;
+                    }
                 }
             }
         }
         return null;
     }
-    public static void clear1(){
+    public static void clear(){
         Cache1.clear();
+        if(cache2_size > 0) {
+            Cache2.clear();
+        }
     }
-    public static void clear2(){
-        Cache1.clear();
-        Cache2.clear();
-    }
-    public String toString1(){
-        double HR1 = (HC1 / r1);
-        return("First level cache with " + cache1_size + " entries has been created\n..............................\nThe number of global references:\t" + r1 + "\nThe number of global cache hits:\t" + HC1 +"\nThe global hit ratio\t\t\t:\t" + HR1 + "\n\nThe number of 1st-level references:\t" + r1 + "\nThe number of 1st-level cache hits:\t" + HC1);
-    }
-    public String toString2(){
+    @Override
+    public String toString(){
+        if(cache2_size == 0){
+            double HR1 = (HC1 / r1);
+            return("First level cache with " + cache1_size + " entries has been created\n..............................\nThe number of global references:\t" + r1 + "\nThe number of global cache hits:\t" + HC1 +"\nThe global hit ratio\t\t\t:\t" + HR1 + "\n\nThe number of 1st-level references:\t" + r1 + "\nThe number of 1st-level cache hits:\t" + HC1);
+        }
         double HC = HC1 + HC2;
         double HR1 = (HC1 / r1);
         double HR2 = (HC2 / r2);

@@ -147,85 +147,53 @@ public class Cache {
             Cache2.addFirst(value);//add value to front of Cache2
             return value;
         }
-        if(Cache1.get(0) == value && Cache2.get(0) == value){
-            return value;
-        }
-        if(Cache1.get(0) == value && !(Cache2.get(0) == value)){
-            while(Cache2.size() >= cache2_size){
-                Cache2.removeLast();
-            }
-            Cache2.addFirst(value);
-            return value;
-        }
-        if(Cache2.get(0) == value && !(Cache1.get(0)==value)){
-            while(Cache1.size() > cache1_size){
-                Cache1.removeLast();
-            }
-            Cache1.addFirst(value);
-            return value;
-        }
         if (Cache1.size() < cache1_size && Cache2.size() < cache2_size) {//if both Caches have space, then:
+            Cache2.remove(value);
             Cache1.addFirst(value);//add value to front of Cache1
             Cache2.addFirst(value);//add value to front of Cache2
             return value;
             //this should be the majority of cases in the beginning
         }
         if (Cache1.size() < cache1_size && Cache2.size() == cache2_size) {//if Cache1 has room, but Cache2 does not
-            Cache2.removeLast();//dump the last element of Cache2
             Cache1.addFirst(value);//add value to Cache1
+            if(Cache2.contains(value)) {
+                Cache2.remove(value);
+            }
+            else{
+                Cache2.removeLast();
+            }
             Cache2.addFirst(value);//add value to Cache2
             return value;
         }
         if(Cache1.size() == cache1_size && Cache2.size() == cache2_size){//if both Caches are at capacity
-            temp = Cache1.getLast();//grab the last element of Cache1
-            if(Cache2.contains(temp)) {
-                Cache2.remove(temp);//make room in Cache2
-                Cache2.add(Cache1.size(), temp);//add the last element of Cache1 to the corresponding position of Cache2
+            Cache1.removeLast();//remove the last element of Cache 1
+            if(Cache2.contains(value)){
+                Cache2.remove(value);
             }
             else{
-                Cache2.removeLast();
-                Cache2.add(Cache1.size(), temp);
+                Cache2.removeLast();//make room in Cache2 by removing the last element
             }
-            Cache1.removeLast();//remove the last element of Cache 1
-            Cache2.removeLast();//make room in Cache2 by removing the last element
             Cache1.addFirst(value);//add value to the front of Cache1
             Cache2.addFirst(value);//add value to the front of Cache2
             return value;
             //this should be the edge cases
         }
         if(Cache1.size() == cache1_size && Cache2.size() < cache2_size){//if Cache1 is full and Cache2 has space, then:
-            temp = Cache1.getLast();//grab the last element of Cache1
-            Cache2.add(Cache1.size(), temp);
+            Cache2.remove(value);
             Cache1.removeLast();//remove the last element of Cache1
-            while(Cache2.size() >= cache2_size){
-                Cache2.removeLast();
-            }
             Cache1.addFirst(value);//no matter what, add value to the front of Cache1
             Cache2.addFirst(value);//no matter what, add value to the front of Cache2
             return value;
             //this should be the majority of cases towards the middle and end
         }
         if(Cache1.size() > cache1_size && Cache2.size() > cache2_size){//if both Caches are too big
+            Cache2.remove(value);
             while(Cache2.size() >= cache2_size){//while Cache2 is too big
                 Cache2.removeLast();//drop the last element of Cache2
             }
-            while(Cache1.size() > cache1_size){//while Cache1 is too big
-                temp = Cache1.get(cache1_size);//grab the last element of Cache1
-                if(Cache2.contains(temp)) {
-                    Cache2.remove(temp);//make room in Cache2
-                    Cache2.add(Cache1.size(), temp);//add the last element of Cache1 to the corresponding position of Cache2
-                }
-                else{
-                    Cache2.add(Cache1.size(), temp);
-                }
-                Cache1.remove(temp);//drop the last element of Cache1
+            while(Cache1.size() >= cache1_size){//while Cache1 is too big
+                Cache1.removeLast();//drop the last element of Cache1
             }
-            temp = Cache1.getLast();
-            Cache2.add(cache1_size,temp);
-            while(Cache2.size() >= cache2_size){//while Cache2 is too big
-                Cache2.removeLast();//drop the last element of Cache2
-            }
-            Cache1.removeLast();
             Cache1.addFirst(value);//no matter what, add value to the front of Cache1
             Cache2.addFirst(value);//no matter what, add value to the front of Cache2
             return value;

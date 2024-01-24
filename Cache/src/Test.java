@@ -74,7 +74,28 @@ public class Test extends Cache {
         }
         try{//try to write to file
             FileWriter writer = new FileWriter("README.txt");//create new file writer
-            writer.write(elapsed+" MS");//write time and MS
+            writer.write("## Project # 1: Cache \n" +
+                    "\n" +
+                    "    Author: Jon Flores\n" +
+                    "    Class: CS321\n" +
+                    "    Semester: Spring 2024\n"+
+                    "## Overview\n" +
+                    "\nThis project took a look at the inefficiencies of Linked Lists by implementing a Cache and 2Cache."+
+                    "\n" +
+                    "\n## Reflection\n"+
+                    "This project took me until the last day to finish; however, I learned a lot about being prepared for and addressing bugs as well as the file writer and scanner."+
+                    "\n\n## Compiling and Using\n" +
+                    "\n" +
+                    "Compiling and using this code is fairly straight-forward. To compile, simply enter the appropriate directory, open a console, and enter the following:\n" +
+                    "\n" +
+                    "\n$javac *.java"+
+                    "\n\nYou will notice that this has compiled all java files in the directory, and this should be fine so long as these are the only .java files in the directory. However, if you wish to compile solely the files for the project, enter the following: "+
+                    "\n\n$javac Cache.java"+
+                    "\n\n$javac Test.java"+
+                    "\n\nNow, to run the program, enter the following: " +
+                    "\n\njava Test <1> <cache1-size> <input file name>\n\nfor single cache or\n\n java Test <2> <cache1-size> <cache2-size> <input file name>\n\nfor 2Cache."+
+                    "\n\n## Results"+
+                    "\n\nTime to run most recent: "+elapsed+" MS");//write time and MS
             writer.close();//close the writer
             System.out.println("\nSuccessfully wrote to file.");//notify user of success
         }

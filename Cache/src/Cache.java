@@ -66,13 +66,6 @@ public class Cache {
         }
         //else assume 2Cache
         r1++;//increment Cache1 reference number
-        if (Cache1.isEmpty() && Cache2.isEmpty()) {//Make sure the Caches are not empty
-            r1++;//if they are, increment Cache1 reference number
-            r2++;//if they are, increment Cache2 reference number
-        }
-        if(Cache2.isEmpty()){//if just Cache2 is empty
-            r2++;//increment Cache2 reference number
-        }
         ListIterator<Object> I = Cache1.listIterator(0);//if all Caches are populated, creates a list iterator for Cache1
         while (I.hasNext()) {//start stepping through Cache1
             if (I.next().equals(key)) {//trigger to keep stepping through Cache1 as well as check each member for the key object
@@ -261,7 +254,6 @@ public class Cache {
         double HR1 = (HC1 / r1);//calculate hit ratio 1
         double HR2 = (HC2 / r2);//calculate hit ratio 2
         double HR = (HC / r1);//calculate global hit ratio
-        System.out.println("\n" + Cache1.size() +"\n" + Cache2.size());
         return("\nFirst level cache with " + cache1_size + " entries has been created\nSecond level cache with " + cache2_size +" entries has been created\n..............................\nThe number of global references:\t" + r1 + "\nThe number of global cache hits:\t" + HC +"\nThe global hit ratio\t\t\t:\t" + HR + "\n\nThe number of 1st-level references:\t" + r1 + "\nThe number of 1st-level cache hits:\t" + HC1 + "\nThe 1st-level cache hit ratio\t\t\t:\t" + HR1 + "\n\nThe number of 2nd-level references:\t" + r2 + "\nThe number of 2nd-level cache hits:\t" + HC2 + "\nThe 2nd-level cache hit ratio\t\t\t:\t" + HR2);
     }
 }

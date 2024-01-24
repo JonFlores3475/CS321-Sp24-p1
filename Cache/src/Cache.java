@@ -83,8 +83,8 @@ public class Cache {
             }
         }
         if(!detect) {//if detect is still false, we still have not found the key object, proceed to Cache2
-            ListIterator<Object> J = Cache2.listIterator(0);//Create a list iterator for Cache2
             r2++;//increment Cache2 reference number
+            ListIterator<Object> J = Cache2.listIterator(0);//Create a list iterator for Cache2
             while (J.hasNext()) {//Start stepping through Cache2
                 if (J.next().equals(key)) {//trigger to keep stepping through Cache2 as well as check each member for the key object
                     HC2++;//if found increment the Cache2 hit counter
@@ -118,29 +118,51 @@ public class Cache {
             return value;
         }
         //else assume a 2Cache
-        if(!Cache1.isEmpty() && Cache2.isEmpty()){//make sure no Cache is empty, and if both are, then:
+        if(Cache1.isEmpty() && Cache2.isEmpty()){//make sure no Cache is empty, and if both are, then:
             Cache1.addFirst(value);//add value to front of Cache1
             Cache2.addFirst(value);//add value to front of Cache2
             return value;
         }
-        if(Cache1.isEmpty() && Cache2.size() < cache2_size) {//if Cache1 is empty and Cache2 has room, then:
-            Cache1.addFirst(value);//add value to the front of Cache1
-            Cache2.addFirst(value);//add value to the front of Cache2
+        if(Cache1.isEmpty()){//Make sure Cache1 is not empty
+            while(Cache2.size() >= cache2_size){
+                Cache2.removeLast();
+            }
+            Cache1.addAll(0,Cache2);//copy all of Cache2 into Cache1
+            while(Cache1.size() >= cache1_size){//trim Cache1
+                Cache1.removeLast();
+            }
+            Cache1.addFirst(value);//add value to front of Cache1
+            Cache2.addFirst(value);//add value to front of Cache 2
             return value;
-            //this should not happen
         }
-        if(Cache1.isEmpty()){//if Cache 1 is empty and Cache2 is at or above size restriction
-            while(Cache2.size() >= cache2_size){//while Cache2 is at or above size restriction
-                Cache2.removeLast();//remove last element of Cache2
+        if(Cache2.isEmpty()){//Make sure Cache2 is not empty
+            Cache2.addAll(0,Cache1);//copy all of Cache1 into Cache2
+            while(Cache1.size() >= cache1_size){//make sure Cache1 is not too big
+                Cache1.removeLast();
             }
-            Cache1 = Cache2;//Now Cache1 and Cache2 need to be the same for the number of elements allowed in Cache1, so we make them identical
-            while(Cache1.size() >= cache1_size){//in case Cache1 is now exceeding size restriction
-                Cache1.removeLast();//dump the last element until Cache1 is the right size again
+            while(Cache2.size() >= cache2_size){
+                Cache2.removeLast();
             }
-            Cache1.addFirst(value);//no matter what, add value to front of Cache1
-            Cache2.addFirst(value);//no matter what, add value to front of Cache2
+            Cache1.addFirst(value);//add value to front of Cache1
+            Cache2.addFirst(value);//add value to front of Cache2
             return value;
-            //this should not happen either
+        }
+        if(Cache1.get(0) == value && Cache2.get(0) == value){
+            return value;
+        }
+        if(Cache1.get(0) == value && !(Cache2.get(0) == value)){
+            while(Cache2.size() >= cache2_size){
+                Cache2.removeLast();
+            }
+            Cache2.addFirst(value);
+            return value;
+        }
+        if(Cache2.get(0) == value && !(Cache1.get(0)==value)){
+            while(Cache1.size() > cache1_size){
+                Cache1.removeLast();
+            }
+            Cache1.addFirst(value);
+            return value;
         }
         if (Cache1.size() < cache1_size && Cache2.size() < cache2_size) {//if both Caches have space, then:
             Cache1.addFirst(value);//add value to front of Cache1
@@ -148,20 +170,24 @@ public class Cache {
             return value;
             //this should be the majority of cases in the beginning
         }
-
         if (Cache1.size() < cache1_size && Cache2.size() == cache2_size) {//if Cache1 has room, but Cache2 does not
             Cache2.removeLast();//dump the last element of Cache2
             Cache1.addFirst(value);//add value to Cache1
             Cache2.addFirst(value);//add value to Cache2
             return value;
-            //this should not happen either
         }
         if(Cache1.size() == cache1_size && Cache2.size() == cache2_size){//if both Caches are at capacity
             temp = Cache1.getLast();//grab the last element of Cache1
+            if(Cache2.contains(temp)) {
+                Cache2.remove(temp);//make room in Cache2
+                Cache2.add(Cache1.size(), temp);//add the last element of Cache1 to the corresponding position of Cache2
+            }
+            else{
+                Cache2.removeLast();
+                Cache2.add(Cache1.size(), temp);
+            }
             Cache1.removeLast();//remove the last element of Cache 1
             Cache2.removeLast();//make room in Cache2 by removing the last element
-            Cache2.addFirst(temp);//add the last element of Cache1 to the front of Cache2
-            Cache2.removeLast();//make room in Cache2
             Cache1.addFirst(value);//add value to the front of Cache1
             Cache2.addFirst(value);//add value to the front of Cache2
             return value;
@@ -169,54 +195,41 @@ public class Cache {
         }
         if(Cache1.size() == cache1_size && Cache2.size() < cache2_size){//if Cache1 is full and Cache2 has space, then:
             temp = Cache1.getLast();//grab the last element of Cache1
+            Cache2.add(Cache1.size(), temp);
             Cache1.removeLast();//remove the last element of Cache1
-            Cache2.addFirst(temp);//add the last element of Cache1 to the front of Cache2
-            if(Cache2.size() == cache2_size){//if Cache2 is now full, then:
-                Cache2.removeLast();//Make room in Cache2
+            while(Cache2.size() >= cache2_size){
+                Cache2.removeLast();
             }
             Cache1.addFirst(value);//no matter what, add value to the front of Cache1
             Cache2.addFirst(value);//no matter what, add value to the front of Cache2
             return value;
             //this should be the majority of cases towards the middle and end
         }
-        if(Cache1.size() > cache1_size && Cache2.size() == cache2_size){//if, somehow, Cache1 is too big and Cache2 is full
-            while(Cache1.size() >= cache1_size){//start a loop to remove extra elements from Cache1
-                temp = Cache1.getLast();//grab the last element of Cache1
-                Cache2.removeLast();//make room in Cache2
-                Cache2.addFirst(temp);//add the last element of Cache1 to the front of Cache2
-            }
-            Cache1.addFirst(value);//now that Cache1 has room, add value to the front
-            Cache2.removeLast();//make room in Cache2
-            Cache2.addFirst(value);//add value to the front of Cache2
-            return value;
-            //this should not happen either
-        }
         if(Cache1.size() > cache1_size && Cache2.size() > cache2_size){//if both Caches are too big
-            while(Cache1.size() >= cache1_size){//while Cache1 is too big
-                temp = Cache1.getLast();//grab the last element of Cache1
-                while(Cache2.size() >= cache2_size){//while Cache2 is too big
-                    Cache2.removeLast();//drop the last element of Cache2
-                }
-                Cache2.addFirst(temp);//add the dropped element of Cache1 to the front of Cache2
-                Cache1.removeLast();//drop the last element of Cache1
+            while(Cache2.size() >= cache2_size){//while Cache2 is too big
+                Cache2.removeLast();//drop the last element of Cache2
             }
+            while(Cache1.size() > cache1_size){//while Cache1 is too big
+                temp = Cache1.get(cache1_size);//grab the last element of Cache1
+                if(Cache2.contains(temp)) {
+                    Cache2.remove(temp);//make room in Cache2
+                    Cache2.add(Cache1.size(), temp);//add the last element of Cache1 to the corresponding position of Cache2
+                }
+                else{
+                    Cache2.add(Cache1.size(), temp);
+                }
+                Cache1.remove(temp);//drop the last element of Cache1
+            }
+            temp = Cache1.getLast();
+            Cache2.add(cache1_size,temp);
+            while(Cache2.size() >= cache2_size){//while Cache2 is too big
+                Cache2.removeLast();//drop the last element of Cache2
+            }
+            Cache1.removeLast();
             Cache1.addFirst(value);//no matter what, add value to the front of Cache1
             Cache2.addFirst(value);//no matter what, add value to the front of Cache2
             return value;
             //this should not happen too often
-        }
-        if(Cache1.size() < cache1_size){//if Cache1 has space, but Cache2 is too big
-            Cache1 = Cache2;//something went wrong, so we reset the Caches to be the same
-            while(Cache1.size() >= cache1_size){//now Cache1 is too big, so while it is:
-                Cache1.removeLast();//remove the last element of Cache1
-            }
-            while(Cache2.size() >= cache2_size){//Cache2 is still too big, so while it is:
-                Cache2.removeLast();//drop the last element of Cache2
-            }
-            Cache2.addFirst(value);//no matter what, add value to the front of Cache2
-            Cache1.addFirst(value);//no matter what, add value to the front of Cache1
-            return value;
-            //this should not happen either
         }
         return value;
     }
@@ -280,6 +293,7 @@ public class Cache {
         double HR1 = (HC1 / r1);//calculate hit ratio 1
         double HR2 = (HC2 / r2);//calculate hit ratio 2
         double HR = (HC / r1);//calculate global hit ratio
-        return("First level cache with " + cache1_size + " entries has been created\nSecond level cache with " + cache2_size +" entries has been created\n..............................\nThe number of global references:\t" + r1 + "\nThe number of global cache hits:\t" + HC +"\nThe global hit ratio\t\t\t:\t" + HR + "\n\nThe number of 1st-level references:\t" + r1 + "\nThe number of 1st-level cache hits:\t" + HC1 + "\nThe 1st-level cache hit ratio\t\t\t:\t" + HR1 + "\n\nThe number of 2nd-level references:\t" + r2 + "\nThe number of 2nd-level cache hits:\t" + HC2 + "\nThe 2nd-level cache hit ratio\t\t\t:\t" + HR2);
+        System.out.println("\n" + Cache1.size() +"\n" + Cache2.size());
+        return("\nFirst level cache with " + cache1_size + " entries has been created\nSecond level cache with " + cache2_size +" entries has been created\n..............................\nThe number of global references:\t" + r1 + "\nThe number of global cache hits:\t" + HC +"\nThe global hit ratio\t\t\t:\t" + HR + "\n\nThe number of 1st-level references:\t" + r1 + "\nThe number of 1st-level cache hits:\t" + HC1 + "\nThe 1st-level cache hit ratio\t\t\t:\t" + HR1 + "\n\nThe number of 2nd-level references:\t" + r2 + "\nThe number of 2nd-level cache hits:\t" + HC2 + "\nThe 2nd-level cache hit ratio\t\t\t:\t" + HR2);
     }
 }

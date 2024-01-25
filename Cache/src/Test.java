@@ -55,6 +55,7 @@ public class Test extends Cache {
             String key = scan.next();//grab strings as they appear
             get(key);//call to Cache get method
         }
+        scan.close();
         long elapsed = System.currentTimeMillis() - start;//calculate elapsed time
         System.out.println(T.Cache.toString());//print out the appropriate toString
         try {//now we try to make a README.txt file with the time printed in it
